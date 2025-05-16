@@ -24,11 +24,20 @@ let agenda = [
     }
 ]
 
-
-
 app.get('/api/persons', (request, response) => {
     response.json(agenda)
 })
+
+// GET Info
+app.get('/info', (request, response) => {
+    const horaSolicitud = new Date();
+    const entradasAgenda = agenda.length;
+
+    response.send(`
+        <p>Phonebook has info for ${entradasAgenda} people.</p>
+        <p>${horaSolicitud.toString()}</p>
+    `);
+});
 
 
 
