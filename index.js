@@ -40,6 +40,14 @@ app.get('/api/persons/:id', (request, response) => {
     }
 })
 
+// Eliminar una sola entrada
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    agenda = agenda.filter(person => person.id !== id)
+
+    response.status(204).end()
+})
+
 // GET Info
 app.get('/info', (request, response) => {
     const horaSolicitud = new Date();
