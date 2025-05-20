@@ -28,6 +28,18 @@ app.get('/api/persons', (request, response) => {
     response.json(agenda)
 })
 
+// Información de una sola entrada de la agenda
+app.get('/api/persons/:id', (request, response) => {
+
+    const id = Number(request.params.id)
+    const person = agenda.find(note => note.id === id)
+    if (person) {
+        response.json(person)
+    } else {
+        response.status(404).end()
+    }
+})
+
 // GET Info
 app.get('/info', (request, response) => {
     const horaSolicitud = new Date();
@@ -38,7 +50,6 @@ app.get('/info', (request, response) => {
         <p>${horaSolicitud.toString()}</p>
     `);
 });
-
 
 
 //-------------------------------------------------------
