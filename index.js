@@ -1,5 +1,6 @@
 const express = require('express')
 const morgan = require('morgan');
+const cors = require('cors')
 
 const app = express()
 
@@ -13,6 +14,8 @@ app.use(morgan(':method :url :status - :response-time ms :body', {
 
 // app.use(morgan('tiny'));
 
+app.use(cors())
+app.use(express.static('dist')) // levantar el front dentro del servidor back
 
 let agenda = [
     {
@@ -108,7 +111,8 @@ app.get('/info', (request, response) => {
 
 
 //-------------------------------------------------------
-const PORT = 3001
+// const PORT = 3002
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
