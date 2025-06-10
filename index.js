@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const app = express()
 
 app.use(express.json())
+app.use(express.static('dist'))
 
 //  Datos enviados en las solicitudes HTTP POST
 morgan.token('body', (req) => JSON.stringify(req.body));
