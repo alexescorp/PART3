@@ -1,6 +1,7 @@
+require('dotenv').config()  // uso de variables de entorno
 const express = require('express')
 const morgan = require('morgan');
-
+const AgendaDB = require('./models/agenda') // Agenda desde MongoDB
 const app = express()
 
 app.use(express.json())
@@ -38,8 +39,14 @@ let agenda = [
     }
 ]
 
+// app.get('/api/persons', (request, response) => {
+//     response.json(agenda)
+// })
+
 app.get('/api/persons', (request, response) => {
-    response.json(agenda)
+    AgendaDB.find({}).then(agend => {
+        response.json(agend)
+    })
 })
 
 // Información de una sola entrada de la agenda
