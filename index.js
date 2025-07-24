@@ -62,11 +62,19 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 // Eliminar una sola entrada
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/personsLocal/:id', (request, response) => {
     const id = Number(request.params.id)
     agenda = agenda.filter(person => person.id !== id)
 
     response.status(204).end()
+})
+
+// Eliminación de entradas de la agenda MongoDB
+app.delete('/api/persons/:id', (request, response) => {
+    AgendaDB.findByIdAndDelete(request.params.id)
+    .then(result => {
+        response.status(204).end()
+    })
 })
 
 // Genera un nuevo id random
