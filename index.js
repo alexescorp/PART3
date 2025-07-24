@@ -75,7 +75,7 @@ const generateId = () => {
 }
 
 // Agregar nuevas entradas
-app.post('/api/persons', (request, response) => {
+app.post('/api/personsLocal', (request, response) => {
     console.log(request.headers) // IMPRIME CABECERAS
     const body = request.body
 
@@ -100,6 +100,23 @@ app.post('/api/persons', (request, response) => {
     agenda = agenda.concat(persona)
 
     response.json(persona)
+})
+
+// Agregar nuevos datos a MongoDB
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+    if(body.name === undefined){
+        return response.status(400).json({error:'content missing'})
+    }
+
+    const contacto = new AgendaDB({
+        name:body.name,
+        number: body.number,
+    })
+
+    contacto.save().then(saveContacto => {
+        response.json(saveContacto)
+    })
 })
 
 
