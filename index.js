@@ -72,9 +72,9 @@ app.delete('/api/personsLocal/:id', (request, response) => {
 // Eliminación de entradas de la agenda MongoDB
 app.delete('/api/persons/:id', (request, response) => {
     AgendaDB.findByIdAndDelete(request.params.id)
-    .then(result => {
-        response.status(204).end()
-    })
+        .then(result => {
+            response.status(204).end()
+        })
 })
 
 // Genera un nuevo id random
@@ -113,18 +113,33 @@ app.post('/api/personsLocal', (request, response) => {
 // Agregar nuevos datos a MongoDB
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    if(body.name === undefined){
-        return response.status(400).json({error:'content missing'})
+    if (body.name === undefined) {
+        return response.status(400).json({ error: 'content missing' })
     }
 
     const contacto = new AgendaDB({
-        name:body.name,
+        name: body.name,
         number: body.number,
     })
 
     contacto.save().then(saveContacto => {
         response.json(saveContacto)
     })
+})
+
+// Actualiza contacto MongoDB
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+    const contacto = {
+        name: body.name,
+        number: body.number,
+    }
+
+    AgendaDB.findByIdAndUpdate(request.params.id, contacto, { new: true })
+        .then(actualizaContacto => {
+            response.json(actualizaContacto)
+        })
+        .catch(error => next(error))
 })
 
 
