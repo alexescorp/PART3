@@ -50,7 +50,7 @@ app.get('/api/persons', (request, response) => {
 })
 
 // Información de una sola entrada de la agenda
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/personsLocal/:id', (request, response) => {
 
     const id = Number(request.params.id)
     const person = agenda.find(note => note.id === id)
@@ -59,6 +59,19 @@ app.get('/api/persons/:id', (request, response) => {
     } else {
         response.status(404).end()
     }
+})
+
+//  Inspección de una entrada individual MongoDB
+app.get('/api/persons/:id', (request, response, next) => {
+    AgendaDB.findById(request.params.id)
+        .then(contacto => {
+            if (contacto) {
+                response.json(contacto)
+            } else {
+                response.status(404).end()
+            }
+        })
+        .catch(error => next(error))
 })
 
 // Eliminar una sola entrada
@@ -146,12 +159,16 @@ app.put('/api/persons/:id', (request, response, next) => {
 // GET Info
 app.get('/info', (request, response) => {
     const horaSolicitud = new Date();
-    const entradasAgenda = agenda.length;
 
-    response.send(`
-        <p>Phonebook has info for ${entradasAgenda} people.</p>
-        <p>${horaSolicitud.toString()}</p>
-    `);
+    AgendaDB.find({})
+        .then(agend => {
+            response.send(`
+                <p>Phonebook has info for ${agend.length} people.</p>
+                <p>${horaSolicitud.toString()}</p>
+            `);
+        })
+
+
 });
 
 // -------------- Manejo controlador de errores ----------------
