@@ -18,14 +18,23 @@ mongoose.connect(url)
 //Definicion del esquema
 const agendaSchema = new mongoose.Schema({
   name: { type: String, minlength: 3 },
-  number: BigInt,
+  number: {
+    type: String,
+    validate: {
+      validator: function (v) {
+        //expresion regular
+        return /^\d{2,3}-\d{6,}$/.test(v);
+      },
+      message: props => `${props.value} no es un número de teléfono válido!`
+    }
+  }
 })
 
 // Configura cómo se transforman los documentos cuando se convierten a JSON
 agendaSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
-    returnedObject.number = returnedObject.number.toString()
+    //returnedObject.number = returnedObject.number.toString()
     delete returnedObject._id
     delete returnedObject.__v
   }
