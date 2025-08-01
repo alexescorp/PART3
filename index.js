@@ -124,7 +124,7 @@ app.post('/api/personsLocal', (request, response) => {
 })
 
 // Agregar nuevos datos a MongoDB
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
     if (body.name === undefined) {
         return response.status(400).json({ error: 'content missing' })
@@ -138,6 +138,7 @@ app.post('/api/persons', (request, response) => {
     contacto.save().then(saveContacto => {
         response.json(saveContacto)
     })
+        .catch(error => next(error))
 })
 
 // Actualiza contacto MongoDB
@@ -177,6 +178,8 @@ const errorHandler = (error, request, response, next) => {
 
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
 
     next(error)
